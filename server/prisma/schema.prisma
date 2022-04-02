@@ -1,0 +1,71 @@
+datasource postgres {
+  provider = "postgresql"
+  url      = env("POSTGRESQL_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt DateTime @default(now())
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     String[]
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Consultant {
+  address     String?
+  birthDate   DateTime?
+  channel     String?
+  createdAt   DateTime                   @default(now())
+  email       String?
+  factures    Facture[]
+  firstName   String
+  id          String                     @id @default(cuid())
+  job         String?
+  kids        String?
+  lastName    String?
+  married     Boolean?
+  phone       String?
+  scripts     Script[]
+  updatedAt   DateTime                   @updatedAt
+  whyTheyCome EnumConsultantWhyTheyCome?
+}
+
+model Script {
+  consultant   Consultant? @relation(fields: [consultantId], references: [id])
+  consultantId String?
+  createdAt    DateTime    @default(now())
+  id           String      @id @default(cuid())
+  text         String?
+  title        String?
+  updatedAt    DateTime    @updatedAt
+}
+
+model Facture {
+  consultant   Consultant? @relation(fields: [consultantId], references: [id])
+  consultantId String?
+  createdAt    DateTime    @default(now())
+  fichier      String?
+  id           String      @id @default(cuid())
+  titre        String?
+  updatedAt    DateTime    @updatedAt
+}
+
+enum EnumConsultantWhyTheyCome {
+  HypnoRelaxation
+  LiberationEmotionnelle
+  DeveloppementPersonnel
+  Tabac
+  Addiction
+  Douleur
+  TroubleSexuel
+  Enfant
+  PerformanceSportive
+  TroubleAlimentaire
+}
